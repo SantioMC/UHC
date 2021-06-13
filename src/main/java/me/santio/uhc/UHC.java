@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class UHC extends JavaPlugin {
     
-    @Getter private final ChatColor mainColor = ChatColor.of("#6666ff");
+    @Getter private static final ChatColor mainColor = ChatColor.of("#6666ff");
     
     @Override
     public void onEnable() {
