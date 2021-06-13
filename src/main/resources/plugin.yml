@@ -1,0 +1,5 @@
+name: UHC
+version: ${project.version}
+main: me.santio.uhc.Uhc
+api-version: 1.17
+authors: [ Santio71 ]
