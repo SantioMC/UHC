@@ -8,8 +8,6 @@ import org.bukkit.scoreboard.*;
 
 public abstract class Sidebar {
     
-//    private final Set<String> EMPTY_LINE = ImmutableSet.of("§f", "§f§r", "§r", "§r§f");
-    
     @Getter private final String id;
     @Getter private transient final ScoreboardManager manager = Bukkit.getScoreboardManager();
     @Getter private final static Team[] lines = new Team[15];
@@ -26,7 +24,7 @@ public abstract class Sidebar {
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         for (int i = 0; i < 15; i++) {
             Team team = getScoreboard().registerNewTeam("uhc_"+id+"_" + i);
-            team.addEntry(ChatColor.values()[i].toString() + "§raaaaaaaaa");
+            team.addEntry(ChatColor.values()[i].toString() + "§r");
             lines[i] = team;
         }
     }
@@ -39,15 +37,27 @@ public abstract class Sidebar {
         player.setScoreboard(getManager().getMainScoreboard());
     }
     
+    public void update() {
+        for (int i = 0; i<15; i++) {
+            objective.getScore(ChatColor.values()[i].toString()+"§r").setScore(i);
+        }
+    }
+    
+    public void delete() {
+        for (Team team : lines) {
+            team.unregister();
+        }
+        objective.unregister();
+    }
+    
     public void setLine(int line, String text) {
         String colored = ChatColor.translateAlternateColorCodes('&', text);
-        Team team = lines[16 - line];
+        Team team = lines[15 - line];
         if (text.length() <= 16) team.setPrefix(colored);
         else {
             team.setPrefix(colored.substring(0, 16));
             team.setSuffix(colored.substring(16));
         }
-        team.setPrefix("");
+        update();
     }
-    
 }

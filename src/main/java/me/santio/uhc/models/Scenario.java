@@ -3,8 +3,11 @@ package me.santio.uhc.models;
 import lombok.Getter;
 import lombok.Setter;
 import me.santio.uhc.Game;
+import me.santio.uhc.UHC;
 import me.santio.uhc.exceptions.DuplicateScenarioException;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
 import java.util.HashMap;
@@ -17,6 +20,7 @@ public abstract class Scenario implements Listener {
     @Getter private final HashMap<String, ScenarioData> data = new HashMap<>();
     @Getter private final String name;
     @Getter private final String id;
+    @Getter private boolean disabled;
     
     public Scenario(String name) throws DuplicateScenarioException {
         this.name = name;
@@ -37,48 +41,20 @@ public abstract class Scenario implements Listener {
         getData().put(data.getKey(), data);
         return data;
     }
-    
+
     /**
-     * Triggered when the game starts, this is right when
-     * the countdown starts.
+     * Stops running the scenario events and flags it as disabled
      */
-    public void onGameStart() {}
-    
+    public void disable() {
+        disabled = true;
+        HandlerList.unregisterAll(this);
+    }
+
     /**
-     * Triggered when the game ends, this is right after the last player
-     * kills the remaining player and the game is announced over
-     * at the end of the game.
+     * Registers the scenario and its EventHandlers and marks it as enabled
      */
-    public void onGameEnd() {}
-    
-    /**
-     * Triggered when a player is killed
-     *
-     * @param player The player's game profile
-     */
-    public void onPlayerDeath(GamePlayer player) {}
-    
-    /**
-     * Triggered when a player has gotten a player kill.
-     *
-     * @param killer The killer's game profile
-     * @param victim The victim's game profile
-     */
-    public void onPlayerKill(GamePlayer killer, GamePlayer victim) {}
-    
-    /**
-     * Triggered when a player has gotten a entity kill.
-     * (This includes player kills)
-     *
-     * @param player The player's game profile
-     */
-    public void onEntityKill(GamePlayer player) {}
-    
-    /**
-     * Triggered when a player was revived by an admin.
-     *
-     * @param player The revived player's game profile
-     */
-    public void onPlayerRevived(GamePlayer player) {}
-    
+    public void enable() {
+        disabled = false;
+        UHC.getInstance().getServer().getPluginManager().registerEvents(this, UHC.getInstance());
+    }
 }
