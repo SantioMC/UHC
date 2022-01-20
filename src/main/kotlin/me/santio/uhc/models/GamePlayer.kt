@@ -1,52 +1,24 @@
 package me.santio.uhc.models
 
-import lombok.Getter
-import lombok.Setter
-import java.util.UUID
-import me.santio.uhc.states.ScoreboardState
-import org.bukkit.entity.Player
-import org.bukkit.Bukkit
-import net.md_5.bungee.api.chat.BaseComponent
 import me.santio.uhc.UHC
-import java.util.HashMap
-import me.santio.uhc.models.ScenarioData
-import java.util.Locale
-import me.santio.uhc.Game
-import me.santio.uhc.exceptions.DuplicateScenarioException
 import me.santio.uhc.states.PlayerState
+import me.santio.uhc.states.ScoreboardState
 import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
-import org.bukkit.event.HandlerList
-import org.apache.commons.lang.WordUtils
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+import java.util.*
 
-class GamePlayer(@field:Getter private val player: UUID) {
-    @Setter
-    @Getter
-    private val playerState = PlayerState.LOBBY
+class GamePlayer(private val player: UUID) {
+    var playerState = PlayerState.LOBBY
+    var scoreboardState = ScoreboardState.LOBBY
+    var team = Team.MAGENTA
+    var kills = 0
+    var kit = "None"
 
-    @Setter
-    @Getter
-    private val scoreboardState = ScoreboardState.LOBBY
-
-    @Setter
-    @Getter
-    private val team = Team.MAGENTA
-
-    @Setter
-    @Getter
-    private val kills = 0
-
-    @Setter
-    @Getter
-    private val kit = "None"
-
-    /**
-     * Fetches the Player object from this context.
-     *
-     * @return The player, or null if they are not online
-     */
-    fun fetchPlayer(): Player {
-        return Bukkit.getPlayer(getPlayer())
+    fun getPlayer(): Player? {
+        return Bukkit.getPlayer(player)
     }
 
     /**
@@ -56,18 +28,18 @@ class GamePlayer(@field:Getter private val player: UUID) {
      * @return The multi-lined BaseComponent message
      */
     val chatHover: Array<BaseComponent>
-        get() = if (getPlayerState() == PlayerState.LOBBY) arrayOf(
+        get() = if (playerState == PlayerState.LOBBY) arrayOf(
             TextComponent(""),
             TextComponent(
                 """
     
-    ${ChatColor.GRAY}Team: ${getTeam().getColor()}${getTeam().getName()}
+    ${ChatColor.GRAY}Team: ${team.color}${team.teamName}
     """.trimIndent()
             ),
             TextComponent(
                 """
     
-    ${ChatColor.GRAY}Selected kit: ${UHC.getMainColor()}${getKit()}
+    ${ChatColor.GRAY}Selected kit: ${UHC.mainColor}${kit}
     """.trimIndent()
             ),
             TextComponent("\n")
@@ -76,19 +48,19 @@ class GamePlayer(@field:Getter private val player: UUID) {
             TextComponent(
                 """
     
-    ${ChatColor.GRAY}Team: ${getTeam().getColor()}${getTeam().getName()}
+    ${ChatColor.GRAY}Team: ${team.color}${team.teamName}
     """.trimIndent()
             ),
             TextComponent(
                 """
     
-    ${ChatColor.GRAY}Selected kit: ${UHC.getMainColor()}${getKit()}
+    ${ChatColor.GRAY}Selected kit: ${UHC.mainColor}${kit}
     """.trimIndent()
             ),
             TextComponent(
                 """
     
-    ${ChatColor.GRAY}Kills: ${UHC.getMainColor()}${getKit()}
+    ${ChatColor.GRAY}Kills: ${UHC.mainColor}${kills}
     """.trimIndent()
             ),
             TextComponent("\n")

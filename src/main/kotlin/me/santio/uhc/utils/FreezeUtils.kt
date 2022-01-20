@@ -46,7 +46,6 @@ class FreezeUtils : Listener {
                 return armorStands
             }
 
-        @JvmStatic
         fun freeze(player: Player) {
             if (frozen.containsKey(player.uniqueId) || player.gameMode == GameMode.SPECTATOR) return
             val loc = player.location
@@ -63,7 +62,6 @@ class FreezeUtils : Listener {
             }
         }
 
-        @JvmStatic
         fun reset() {
             armorStands.forEach(Consumer { obj: Entity -> obj.remove() })
             frozen.clear()

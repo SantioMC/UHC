@@ -1,22 +1,11 @@
 package me.santio.uhc.models
 
-import lombok.Getter
-import java.util.UUID
-import me.santio.uhc.states.ScoreboardState
-import org.bukkit.entity.Player
-import org.bukkit.Bukkit
-import net.md_5.bungee.api.chat.BaseComponent
-import me.santio.uhc.UHC
-import java.util.HashMap
-import me.santio.uhc.models.ScenarioData
-import java.util.Locale
-import me.santio.uhc.Game
-import me.santio.uhc.exceptions.DuplicateScenarioException
 import net.md_5.bungee.api.ChatColor
-import org.bukkit.event.HandlerList
-import org.apache.commons.lang.WordUtils
 
-enum class Team(@field:Getter private override val name: String, @field:Getter private val color: ChatColor) {
+enum class Team(
+    val teamName: String,
+    val color: ChatColor
+) {
     RED("Red", ChatColor.RED), ORANGE("Orange", ChatColor.GOLD), YELLOW("Yellow", ChatColor.YELLOW), GREEN(
         "Green",
         ChatColor.DARK_GREEN

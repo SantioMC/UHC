@@ -1,46 +1,41 @@
 package me.santio.uhc.sidebars
 
-import lombok.Getter
-import me.santio.uhc.sidebars.Sidebar
-import me.santio.uhc.UHC
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.entity.Player
-import org.bukkit.scoreboard.*
+import org.bukkit.scoreboard.DisplaySlot
+import org.bukkit.scoreboard.Objective
+import org.bukkit.scoreboard.Scoreboard
+import org.bukkit.scoreboard.Team
 
-abstract class Sidebar(@field:Getter private val id: String, title: String?) {
-    @Getter
+abstract class Sidebar(val id: String, val title: String) {
     @Transient
-    private val manager = Bukkit.getScoreboardManager()
-
-    @Getter
-    @Transient
-    private val scoreboard: Scoreboard
+    private val manager = Bukkit.getScoreboardManager()!!
 
     @Transient
-    private val objective: Objective
+    private val scoreboard: Scoreboard = manager.newScoreboard
+
+    @Transient
+    private val objective: Objective = scoreboard.registerNewObjective(
+        "uhc_$id", "dummy",
+        ChatColor.translateAlternateColorCodes('&', title)
+    )
 
     init {
-        if (getManager() == null) return
-        scoreboard = getManager().getNewScoreboard()
-        objective = scoreboard.registerNewObjective(
-            "uhc_$id", "dummy",
-            ChatColor.translateAlternateColorCodes('&', title!!)
-        )
         objective.displaySlot = DisplaySlot.SIDEBAR
         for (i in 0..14) {
-            val team: Team = getScoreboard().registerNewTeam("uhc_" + id + "_" + i)
+            val team: Team = scoreboard.registerNewTeam("uhc_" + id + "_" + i)
             team.addEntry(ChatColor.values()[i].toString() + "§r")
             lines[i] = team
         }
     }
 
     fun apply(player: Player) {
-        player.scoreboard = getScoreboard()
+        player.scoreboard = scoreboard
     }
 
     fun remove(player: Player) {
-        player.scoreboard = getManager().getMainScoreboard()
+        player.scoreboard = manager.mainScoreboard
     }
 
     fun update() {
@@ -67,7 +62,6 @@ abstract class Sidebar(@field:Getter private val id: String, title: String?) {
     }
 
     companion object {
-        @Getter
-        private val lines = arrayOfNulls<Team>(15)
+        val lines = arrayOfNulls<Team>(15)
     }
 }

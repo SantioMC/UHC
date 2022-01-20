@@ -5,7 +5,5 @@ import org.bukkit.event.HandlerList
 
 class GameStartEvent : Event() {
     private val HANDLER_LIST = HandlerList()
-    override fun getHandlers(): HandlerList {
-        return HANDLER_LIST
-    }
+    override fun getHandlers(): HandlerList = HANDLER_LIST
 }
