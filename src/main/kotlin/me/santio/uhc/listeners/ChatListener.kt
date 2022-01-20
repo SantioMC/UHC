@@ -1,8 +1,10 @@
 package me.santio.uhc.listeners
 
 import me.santio.uhc.Game
+import me.santio.uhc.UHC
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -16,15 +18,15 @@ object ChatListener : Listener {
     fun onChat(event: AsyncPlayerChatEvent) {
         if (!event.isCancelled) {
             val gamePlayer = Game.players[event.player.uniqueId] ?: return
-            val hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, gamePlayer.chatHover)
 
             val original: String = try { String.format(event.format, event.player.name, event.message) }
             catch(e: MissingFormatArgumentException) { event.format }
-            val component = TextComponent.fromLegacyText(event.format)
-            component[0].hoverEvent = hoverEvent
+
+            val component = TextComponent.fromLegacyText(original)
+            component[0].hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(gamePlayer.chatHover))
 
             event.isCancelled = true
-            Bukkit.getOnlinePlayers().forEach { player: Player? -> player!!.spigot().sendMessage(*component) }
+            Bukkit.getOnlinePlayers().forEach { player: Player -> player.spigot().sendMessage(*component) }
         }
     }
 }
