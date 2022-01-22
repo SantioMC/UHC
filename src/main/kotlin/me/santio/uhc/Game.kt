@@ -18,11 +18,26 @@ object Game {
     var starting = false
     var started = false
     var countdown = 0
+    var countdowner: BukkitTask? = null
+
     var players = HashMap<UUID, GamePlayer>()
+    var alive = ArrayList<UUID>()
+
     var allScenarios = HashMap<String, Scenario>()
     var activeScenarios = ArrayList<Scenario>()
-    var alive = ArrayList<UUID>()
-    var countdowner: BukkitTask? = null
+
+    var type: Int = 1
+    var host: UUID? = null
+
+    fun getType(): String {
+        return if (type == 1) "Solo"
+        else "To${type}"
+    }
+
+    fun getHost(): Player? {
+        return if (host != null) Bukkit.getPlayer(host!!)
+        else return null
+    }
 
     /**
      * Attempts to start the game

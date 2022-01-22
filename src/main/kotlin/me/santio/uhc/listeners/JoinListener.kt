@@ -2,6 +2,7 @@ package me.santio.uhc.listeners
 
 import me.santio.uhc.Game
 import me.santio.uhc.models.GamePlayer
+import me.santio.uhc.sidebars.ScoreboardService
 import me.santio.uhc.states.PlayerState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -14,9 +15,10 @@ object JoinListener : Listener {
         val gamePlayer = GamePlayer(event.player.uniqueId)
         gamePlayer.playerState =
             if (Game.started) PlayerState.DEAD else PlayerState.LOBBY
-        gamePlayer.scoreboardState = gamePlayer.playerState.scoreboard
-        gamePlayer.scoreboardState.sidebar?.apply(event.player)
         Game.players[event.player.uniqueId] = gamePlayer
+
+        // Update Sidebar
+        for (player in Game.players.values) ScoreboardService.join(player)
     }
 
     @EventHandler
